@@ -6,17 +6,17 @@ const resolve = (...file) => path.resolve(__dirname, ...file)
 const log = message => console.log(chalk.green(`${message}`))
 const successLog = message => console.log(chalk.blue(`${message}`))
 const errorLog = error => console.log(chalk.red(`${error}`))
-const generateFile = (path, data) => {
+const generateFile = (filePath, data) => {
   let configPath = path.join(process.cwd(), 'config')
   if (!fs.existsSync(configPath)) {
     fs.mkdir(configPath)
   }
-  if (fs.existsSync(path)) {
-    errorLog(`${path}文件已存在`)
+  if (fs.existsSync(filePath)) {
+    errorLog(`${filePath}文件已存在`)
     return
   }
   return new Promise((resolve, reject) => {
-    fs.writeFile(path, data, 'utf8', err => {
+    fs.writeFile(filePath, data, 'utf8', err => {
       if (err) {
         errorLog(err.message)
         reject(err)
