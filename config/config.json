@@ -1,0 +1,14 @@
+{
+  "localDir": "dist/",
+  "zipSavePath": "publish",
+  "zipName": "dist",
+  "servers": [
+    {
+      "host": "",
+      "user": "",
+      "port": "",
+      "password": "",
+      "remoteDir": ""
+    }
+  ]
+}
