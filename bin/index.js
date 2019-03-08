@@ -21,13 +21,13 @@ commander
     require('../command/publish')()
   })
 
-// commander
-//   .command('generator_config')
-//   .description('生成配置文件')
-//   .alias('gcfg')
-//   .action(() => {
-//     require('../command/generator_config')()
-//   })
+commander
+  .command('generator_config')
+  .description('生成配置文件')
+  .alias('gcfg')
+  .action(() => {
+    require('../command/generator_config')()
+  })
 
 // 错误命令时的显示帮助
 commander.parse(process.argv)
