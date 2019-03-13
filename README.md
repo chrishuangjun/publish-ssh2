@@ -29,3 +29,5 @@ publish-ssh2-cli gcfg
 ## 部署代码命令
 publish-ssh2-cli publish
 
+## 恢复至上个版本
+publish-ssh2-cli revert

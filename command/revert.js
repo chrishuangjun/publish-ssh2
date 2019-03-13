@@ -1,14 +1,22 @@
 const Client = require('ssh2').Client
 const co = require('co')
-function revert(config, remoteDir, zipName) {
+const chalk = require('chalk')
+const { readFile, fileDirExists } = require('./utils/fileUtils')
+function revert(config, zipName) {
 	const conn = new Client()
-	const cwd = process.cwd()
 	conn
 		.on('ready', function () {
 			conn.exec(
-				`rm ${remoteDir}/${zipName}.zip && mv ${remoteDir}/${zipName}.zip.bak ${remoteDir}/${zipName}.zip && unzip -o ${zipName}.zip`,
+				`rm -rf ${config.remoteDir}/${zipName}.zip && mv ${config.remoteDir}/${zipName}.zip.bak ${config.remoteDir}/${zipName}.zip && unzip -o ${zipName}.zip`,
 				function (err, stream) {
-
+					if (err) {
+						console.log(err)
+					}
+					stream
+						.on('close', function () {
+							conn.end()
+						})
+						.on('data', function () { })
 				}
 			)
 		})
@@ -19,7 +27,7 @@ function revert(config, remoteDir, zipName) {
 			password: config.password
 		})
 }
-module.exports = function (config) {
+module.exports = function () {
 	co(function* () {
 		const fileExist = yield fileDirExists('./config/config.json')
 
@@ -34,7 +42,7 @@ module.exports = function (config) {
 		try {
 			const cfg = JSON.parse(yield readFile('./config/config.json'))
 			cfg.servers.forEach(item => {
-				revert(item, cfg.remoteDir, cfg.zipName)
+				revert(item, cfg.zipName)
 			});
 		} catch (error) {
 			console.log(chalk.red(error))
