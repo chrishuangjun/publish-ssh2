@@ -42,8 +42,8 @@ const configTpl = `
   ]
 }
 `
-module.exports = () => {
-  generateFile(path.join(process.cwd(), 'config/config.json'), configTpl)
+module.exports = (filePath='config/config.json') => {
+  generateFile(path.join(process.cwd(), filePath), configTpl)
     .then(function() {
       successLog(`配置文件生成成功,在目录${path.join(process.cwd(), 'config')}`)
       process.exit()

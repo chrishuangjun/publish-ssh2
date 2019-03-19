@@ -25,8 +25,8 @@ commander
     .command('generator_config')
     .description('生成配置文件')
     .alias('gcfg')
-    .action(() => {
-        require('../command/generator_config')()
+    .action((filePath) => {
+        require('../command/generator_config')(filePath)
     })
 
 commander

@@ -24,7 +24,7 @@ yarn/cnpm/npm install publish-ssh2 -g
 ```
 
 ### 用命令生成配置文件模板
-publish-ssh2-cli gcfg
+publish-ssh2-cli gcfg [filePath] // filePath为配置文件路径，可选
 
 ## 部署代码命令
 publish-ssh2-cli publish
