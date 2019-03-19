@@ -7,9 +7,9 @@ const { UploadDir } = require('./utils/sshUtils.js')
 const { readFile, fileDirExists } = require('./utils/fileUtils')
 const produceZip = require('./utils/produce-zip')
 
-module.exports = () => {
+module.exports = (cfgPath='./publishcfg/config.json') => {
   co(function*() {
-    const fileExist = yield fileDirExists('./config/config.json')
+    const fileExist = yield fileDirExists(cfgPath)
 
     if (!fileExist) {
       console.log(
@@ -20,7 +20,7 @@ module.exports = () => {
       process.exit()
     }
     try {
-      const cfg = JSON.parse(yield readFile('./config/config.json'))
+      const cfg = JSON.parse(yield readFile(cfgPath))
       console.log(chalk.blue('服务器信息:'))
       console.log(cfg.servers)
 

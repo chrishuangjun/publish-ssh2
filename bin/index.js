@@ -17,24 +17,24 @@ commander
     .command('publish')
     .description('发布到服务器')
     .alias('p')
-    .action(() => {
-        require('../command/publish')()
+    .action((cfgPath) => {
+        require('../command/publish')(cfgPath)
     })
 
 commander
     .command('generator_config')
     .description('生成配置文件')
     .alias('gcfg')
-    .action((filePath) => {
-        require('../command/generator_config')(filePath)
+    .action((cfgPath) => {
+        require('../command/generator_config')(cfgPath)
     })
 
 commander
     .command('revert')
     .description('恢复至上个版本')
     .alias('rv')
-    .action(() => {
-        require('../command/revert')()
+    .action((cfgPath) => {
+        require('../command/revert')(cfgPath)
     })
 
 // 错误命令时的显示帮助

@@ -27,9 +27,9 @@ function revert(config, zipName) {
 			password: config.password
 		})
 }
-module.exports = function () {
+module.exports = function (cfgPath) {
 	co(function* () {
-		const fileExist = yield fileDirExists('./config/config.json')
+		const fileExist = yield fileDirExists(cfgPath)
 
 		if (!fileExist) {
 			console.log(
@@ -40,7 +40,7 @@ module.exports = function () {
 			process.exit()
 		}
 		try {
-			const cfg = JSON.parse(yield readFile('./config/config.json'))
+			const cfg = JSON.parse(yield readFile(cfgPath))
 			cfg.servers.forEach(item => {
 				revert(item, cfg.zipName)
 			});
