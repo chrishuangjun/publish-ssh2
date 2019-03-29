@@ -1,5 +1,5 @@
 # 安装命令
-yarn/cnpm/npm install publish-ssh2 -g
+yarn/cnpm/npm install publish-by-ssh2 -g
 
 # 使用命令
 
