@@ -7,24 +7,28 @@ const log = message => console.log(chalk.green(`${message}`))
 const successLog = message => console.log(chalk.blue(`${message}`))
 const errorLog = error => console.log(chalk.red(`${error}`))
 const generateFile = (filePath, data) => {
-  let configPath = path.join(process.cwd(), 'config')
-  if (!fs.existsSync(configPath)) {
-    fs.mkdir(configPath)
-  }
-  if (fs.existsSync(filePath)) {
-    errorLog(`${filePath}文件已存在`)
-    return
-  }
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filePath, data, 'utf8', err => {
-      if (err) {
-        errorLog(err.message)
-        reject(err)
-      } else {
-        resolve(true)
-      }
+    console.log('filePath:', filePath)
+    let pathArr = filePath.split('\\');
+    pathArr.pop();
+    let configPath = path.join(process.cwd(), pathArr.join('\\'))
+    console.log(configPath);
+    if (!fs.existsSync(configPath)) {
+        fs.mkdir(configPath)
+    }
+    if (fs.existsSync(filePath)) {
+        errorLog(`${filePath}文件已存在`)
+        return
+    }
+    return new Promise((resolve, reject) => {
+        fs.writeFile(filePath, data, 'utf8', err => {
+            if (err) {
+                errorLog(err.message)
+                reject(err)
+            } else {
+                resolve(true)
+            }
+        })
     })
-  })
 }
 const configTpl = `
 {
@@ -42,14 +46,14 @@ const configTpl = `
   ]
 }
 `
-module.exports = (cfgPath='publishcfg/config.json') => {
-  generateFile(path.join(process.cwd(), cfgPath), configTpl)
-    .then(function() {
-      successLog(`配置文件生成成功,在目录${path.join(process.cwd(), 'config')}`)
-      process.exit()
-    })
-    .catch(function(err) {
-      errorLog('生成配置文件失败')
-      process.exit()
-    })
+module.exports = (cfgPath = 'publishcfg\\config.json') => {
+    generateFile(cfgPath, configTpl)
+        .then(function () {
+            successLog(`配置文件生成成功,路径：${path.join(process.cwd(), cfgPath)}`)
+            process.exit()
+        })
+        .catch(function (err) {
+            errorLog('生成配置文件失败')
+            process.exit()
+        })
 }
