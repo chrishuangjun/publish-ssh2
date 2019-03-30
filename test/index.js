@@ -1,0 +1,1 @@
+require('../command/publish.js')()

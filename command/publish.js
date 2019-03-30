@@ -8,6 +8,7 @@ const { readFile, fileDirExists } = require('./utils/fileUtils')
 const produceZip = require('./utils/produce-zip')
 
 module.exports = (cfgPath = 'publishcfg\\config.json') => {
+    console.log(cfgPath)
     co(function* () {
         const fileExist = yield fileDirExists(cfgPath)
 
@@ -24,18 +25,18 @@ module.exports = (cfgPath = 'publishcfg\\config.json') => {
             console.log(chalk.blue('服务器信息:'))
             console.log(cfg.servers)
 
-            const publishAnswer = yield prompt('是否发布（yes/no): ')
+            const publishAnswer = yield prompt('是否发布（y/n): ')
 
-            if (publishAnswer === 'yes') {
+            if (publishAnswer.toLowerCase() === 'y') {
                 console.log(chalk.blue('zip压缩中...'))
                 const cwd = process.cwd()
                 produceZip(
-                    path.join(cwd, `${cfg.zipSavePath}/${cfg.zipName}.zip`),
+                    path.join(cwd, `${cfg.localDir}/${cfg.zipName}.zip`),
                     path.join(cwd, cfg.localDir),
                     () => {
                         console.log(chalk.blue('zip压缩完成,发布中...'))
                         cfg.servers.forEach(server => {
-                            UploadDir(server, cfg.zipName, cfg.zipSavePath, res => {
+                            UploadDir(server, cfg.zipName, cfg.localDir, res => {
                                 process.exit()
                             })
                         })

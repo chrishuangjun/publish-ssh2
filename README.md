@@ -9,7 +9,6 @@ yarn/cnpm/npm install publish-by-ssh2 -g
 ```配置文件模板
 {
   "localDir": "dist/",//本地需要发布的代码目录
-  "zipSavePath": "publish",//压缩代码的存放目录
   "zipName": "dist",//代码压缩后的文件名
   "servers": [
     {

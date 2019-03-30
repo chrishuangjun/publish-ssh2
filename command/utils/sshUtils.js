@@ -13,21 +13,21 @@ var glob = require('glob')
  * 回调：then(conn) 连接远程的client对象
  */
 function Connect(server, then) {
-  var conn = new Client()
-  conn
-    .on('ready', function() {
-      then(conn)
-    })
-    .on('error', function() {
-      //console.log("connect error!");
-    })
-    .on('end', function() {
-      //console.log("connect end!");
-    })
-    .on('close', function() {
-      //console.log("connect close");
-    })
-    .connect(server)
+    var conn = new Client()
+    conn
+        .on('ready', function () {
+            then(conn)
+        })
+        .on('error', function () {
+            //console.log("connect error!");
+        })
+        .on('end', function () {
+            //console.log("connect end!");
+        })
+        .on('close', function () {
+            //console.log("connect close");
+        })
+        .connect(server)
 }
 
 /**
@@ -36,28 +36,28 @@ function Connect(server, then) {
  * 回调：then(err, data) ： data 运行命令之后的返回数据信息
  */
 function Shell(server, cmd, then) {
-  Connect(server, function(conn) {
-    conn.shell(function(err, stream) {
-      if (err) {
-        then(err)
-      } else {
-        // end of if
-        var buf = ''
-        stream
-          .on('close', function() {
-            conn.end()
-            then(err, buf)
-          })
-          .on('data', function(data) {
-            buf = buf + data
-          })
-          .stderr.on('data', function(data) {
-            console.log('stderr: ' + data)
-          })
-        stream.end(cmd)
-      }
+    Connect(server, function (conn) {
+        conn.shell(function (err, stream) {
+            if (err) {
+                then(err)
+            } else {
+                // end of if
+                var buf = ''
+                stream
+                    .on('close', function () {
+                        conn.end()
+                        then(err, buf)
+                    })
+                    .on('data', function (data) {
+                        buf = buf + data
+                    })
+                    .stderr.on('data', function (data) {
+                        console.log('stderr: ' + data)
+                    })
+                stream.end(cmd)
+            }
+        })
     })
-  })
 }
 
 /**
@@ -66,18 +66,18 @@ function Shell(server, cmd, then) {
  * 回调：then(err, result)
  */
 function UploadFile(server, localPath, remotePath, then) {
-  Connect(server, function(conn) {
-    conn.sftp(function(err, sftp) {
-      if (err) {
-        then(err)
-      } else {
-        sftp.fastPut(localPath, remotePath, function(err, result) {
-          conn.end()
-          then(err, result)
+    Connect(server, function (conn) {
+        conn.sftp(function (err, sftp) {
+            if (err) {
+                then(err)
+            } else {
+                sftp.fastPut(localPath, remotePath, function (err, result) {
+                    conn.end()
+                    then(err, result)
+                })
+            }
         })
-      }
     })
-  })
 }
 
 /**
@@ -86,22 +86,22 @@ function UploadFile(server, localPath, remotePath, then) {
  * 回调：then(err, result)
  */
 function DownloadFile(server, remotePath, localPath, then) {
-  Connect(server, function(conn) {
-    conn.sftp(function(err, sftp) {
-      if (err) {
-        then(err)
-      } else {
-        sftp.fastGet(remotePath, localPath, function(err, result) {
-          if (err) {
-            then(err)
-          } else {
-            conn.end()
-            then(err, result)
-          }
+    Connect(server, function (conn) {
+        conn.sftp(function (err, sftp) {
+            if (err) {
+                then(err)
+            } else {
+                sftp.fastGet(remotePath, localPath, function (err, result) {
+                    if (err) {
+                        then(err)
+                    } else {
+                        conn.end()
+                        then(err, result)
+                    }
+                })
+            }
         })
-      }
     })
-  })
 }
 
 /**
@@ -113,48 +113,48 @@ function DownloadFile(server, remotePath, localPath, then) {
  * 回调：then(err, dirs) ： dir, 获取的列表信息
  */
 function GetFileOrDirList(server, remotePath, isFile, then) {
-  var cmd =
-    'find ' +
-    remotePath +
-    ' -type ' +
-    (isFile == true ? 'f' : 'd') +
-    '\r\nexit\r\n'
-  Shell(server, cmd, function(err, data) {
-    var arr = []
-    var remoteFile = []
-    arr = data.split('\r\n')
-    arr.forEach(function(dir) {
-      if (dir.indexOf(remotePath) == 0) {
-        remoteFile.push(dir)
-      }
+    var cmd =
+        'find ' +
+        remotePath +
+        ' -type ' +
+        (isFile == true ? 'f' : 'd') +
+        '\r\nexit\r\n'
+    Shell(server, cmd, function (err, data) {
+        var arr = []
+        var remoteFile = []
+        arr = data.split('\r\n')
+        arr.forEach(function (dir) {
+            if (dir.indexOf(remotePath) == 0) {
+                remoteFile.push(dir)
+            }
+        })
+        then(err, remoteFile)
     })
-    then(err, remoteFile)
-  })
 }
 
 /**
  * 描述：控制上传或者下载一个一个的执行
  */
 function Control() {
-  events.EventEmitter.call(this)
+    events.EventEmitter.call(this)
 }
 util.inherits(Control, events.EventEmitter) // 使这个类继承EventEmitter
 
 var control = new Control()
 
-control.on('donext', function(todos, then) {
-  if (todos.length > 0) {
-    var func = todos.shift()
-    func(function(err) {
-      if (err) {
-        then(err)
-      } else {
-        control.emit('donext', todos, then)
-      }
-    })
-  } else {
-    then(null)
-  }
+control.on('donext', function (todos, then) {
+    if (todos.length > 0) {
+        var func = todos.shift()
+        func(function (err) {
+            if (err) {
+                then(err)
+            } else {
+                control.emit('donext', todos, then)
+            }
+        })
+    } else {
+        then(null)
+    }
 })
 
 /**
@@ -166,37 +166,37 @@ control.on('donext', function(todos, then) {
  * 回调：then(err)
  */
 function DownloadDir(server, remoteDir, localDir, then) {
-  GetFileOrDirList(server, remoteDir, false, function(err, dirs) {
-    if (err) {
-      throw err
-    } else {
-      GetFileOrDirList(server, remoteDir, true, function(err, files) {
+    GetFileOrDirList(server, remoteDir, false, function (err, dirs) {
         if (err) {
-          throw err
+            throw err
         } else {
-          dirs.shift()
-          dirs.forEach(function(dir) {
-            var tmpDir = path
-              .join(localDir, dir.slice(remoteDir.length))
-              .replace(/[//]\g/, '\\')
-            // 创建目录
-            fs.mkdirSync(tmpDir)
-          })
-          var todoFiles = []
-          files.forEach(function(file) {
-            var tmpPath = path
-              .join(localDir, file.slice(remoteDir.length))
-              .replace(/[//]\g/, '\\')
-            todoFiles.push(function(done) {
-              DownloadFile(server, file, tmpPath, done)
-              console.log('downloading the ' + file)
-            }) // end of todoFiles.push
-          })
-          control.emit('donext', todoFiles, then)
+            GetFileOrDirList(server, remoteDir, true, function (err, files) {
+                if (err) {
+                    throw err
+                } else {
+                    dirs.shift()
+                    dirs.forEach(function (dir) {
+                        var tmpDir = path
+                            .join(localDir, dir.slice(remoteDir.length))
+                            .replace(/[//]\g/, '\\')
+                        // 创建目录
+                        fs.mkdirSync(tmpDir)
+                    })
+                    var todoFiles = []
+                    files.forEach(function (file) {
+                        var tmpPath = path
+                            .join(localDir, file.slice(remoteDir.length))
+                            .replace(/[//]\g/, '\\')
+                        todoFiles.push(function (done) {
+                            DownloadFile(server, file, tmpPath, done)
+                            console.log('downloading the ' + file)
+                        }) // end of todoFiles.push
+                    })
+                    control.emit('donext', todoFiles, then)
+                }
+            })
         }
-      })
-    }
-  })
+    })
 }
 
 /**
@@ -206,17 +206,17 @@ function DownloadDir(server, remoteDir, localDir, then) {
  *		files 文件列表
  */
 function GetFileAndDirList(localDir, dirs, files) {
-  var dir = fs.readdirSync(localDir)
-  for (var i = 0; i < dir.length; i++) {
-    var p = path.join(localDir, dir[i])
-    var stat = fs.statSync(p)
-    if (stat.isDirectory()) {
-      dirs.push(p)
-      GetFileAndDirList(p, dirs, files)
-    } else {
-      files.push(p)
+    var dir = fs.readdirSync(localDir)
+    for (var i = 0; i < dir.length; i++) {
+        var p = path.join(localDir, dir[i])
+        var stat = fs.statSync(p)
+        if (stat.isDirectory()) {
+            dirs.push(p)
+            GetFileAndDirList(p, dirs, files)
+        } else {
+            files.push(p)
+        }
     }
-  }
 }
 
 /**
@@ -228,99 +228,99 @@ function GetFileAndDirList(localDir, dirs, files) {
  * 回调：then(err)
  */
 function UploadDir(config, zipName, zipSavePath, cb) {
-  const conn = new Client()
-  const cwd = process.cwd()
-  conn
-    .on('ready', function() {
-      conn.exec(
-        `mv ${config.remoteDir}/${zipName}.zip ${
-          config.remoteDir
-        }/${zipName}.zip.bak`,
-        function(err, stream) {
-          glob(
-            '**/*.*',
-            {
-              cwd: path.join(cwd, zipSavePath)
-            },
-            function(err, files) {
-              if (err) {
-                console.log('异常:' + err)
-                return
-              }
-              let length = files.length,
-                index = 0
-              conn.sftp((err, sftp) => {
-                if (err) {
-                  console.log('异常:' + err)
-                  return
-                }
-                const upload = () => {
-                  const currentFile = files[index++]
-                  if (!currentFile || index > length) {
-                    console.log('上传完毕')
-                    conn.exec(
-                      `cd ${config.remoteDir} && unzip -o ${zipName}.zip`,
-                      function(err, stream) {
-                        if (err) {
-                          console.log('异常:' + err)
-                          return
+    const conn = new Client()
+    const cwd = process.cwd()
+    conn
+        .on('ready', function () {
+            conn.exec(
+                `mv ${config.remoteDir}/${zipName}.zip ${
+                config.remoteDir
+                }/${zipName}.zip.bak`,
+                function (err, stream) {
+                    glob(
+                        '**/*.zip',
+                        {
+                            cwd: path.join(cwd, zipSavePath)
+                        },
+                        function (err, files) {
+                            if (err) {
+                                console.log('异常:' + err)
+                                return
+                            }
+                            let length = files.length,
+                                index = 0
+                            conn.sftp((err, sftp) => {
+                                if (err) {
+                                    console.log('异常:' + err)
+                                    return
+                                }
+                                const upload = () => {
+                                    const currentFile = files[index++]
+                                    if (!currentFile || index > length) {
+                                        console.log('上传完毕')
+                                        conn.exec(
+                                            `cd ${config.remoteDir} && unzip -o ${zipName}.zip`,
+                                            function (err, stream) {
+                                                if (err) {
+                                                    console.log('异常:' + err)
+                                                    return
+                                                }
+                                                stream
+                                                    .on('close', function () {
+                                                        conn.end()
+                                                        cb && typeof cb === 'function' && cb()
+                                                    })
+                                                    .on('data', function () { })
+                                            }
+                                        )
+                                        // conn.end()
+                                        return
+                                    }
+                                    sftp.lstat(config.remoteDir, function (err, stat) {
+                                        if (err) {
+                                            //远程服务器的路径不存在，则创建目录
+                                            sftp.mkdir(config.remoteDir)
+                                        }
+                                        console.log(
+                                            'path.join(cwd, zipSavePath, currentFile):',
+                                            path.join(cwd, zipSavePath, currentFile)
+                                        )
+                                        console.log(
+                                            'path.join(cwd, zipSavePath, currentFile)服务器:',
+                                            path
+                                                .join(config.remoteDir, currentFile)
+                                                .replace(/\\/g, '/')
+                                        )
+                                        sftp.fastPut(
+                                            path.join(cwd, zipSavePath, currentFile),
+                                            path
+                                                .join(config.remoteDir, currentFile)
+                                                .replace(/\\/g, '/'),
+                                            function (err, result) {
+                                                if (err) {
+                                                    console.log(err, '出错了')
+                                                    conn.end()
+                                                    return
+                                                }
+                                                console.log(`${currentFile}上传成功`)
+                                                upload()
+                                            }
+                                        )
+                                    })
+                                }
+                                upload()
+                            })
                         }
-                        stream
-                          .on('close', function() {
-                            conn.end()
-                            cb && typeof cb === 'function' && cb()
-                          })
-                          .on('data', function() {})
-                      }
                     )
-                    // conn.end()
-                    return
-                  }
-                  sftp.lstat(config.remoteDir, function(err, stat) {
-                    if (err) {
-                      //远程服务器的路径不存在，则创建目录
-                      sftp.mkdir(config.remoteDir)
-                    }
-                    console.log(
-                      'path.join(cwd, zipSavePath, currentFile):',
-                      path.join(cwd, zipSavePath, currentFile)
-                    )
-                    console.log(
-                      'path.join(cwd, zipSavePath, currentFile)服务器:',
-                      path
-                        .join(config.remoteDir, currentFile)
-                        .replace(/\\/g, '/')
-                    )
-                    sftp.fastPut(
-                      path.join(cwd, zipSavePath, currentFile),
-                      path
-                        .join(config.remoteDir, currentFile)
-                        .replace(/\\/g, '/'),
-                      function(err, result) {
-                        if (err) {
-                          console.log(err, '出错了')
-                          conn.end()
-                          return
-                        }
-                        console.log(`${currentFile}上传成功`)
-                        upload()
-                      }
-                    )
-                  })
                 }
-                upload()
-              })
-            }
-          )
-        }
-      )
-    })
-    .connect({
-      host: config.host,
-      port: config.port,
-      username: config.user,
-      password: config.password
-    })
+            )
+        })
+        .connect({
+            host: config.host,
+            port: config.port,
+            username: config.user,
+            password: config.password
+        })
 }
 // function UploadDir(server, localDir, remoteDir, then) {
 //   var dirs = []

@@ -33,7 +33,6 @@ const generateFile = (filePath, data) => {
 const configTpl = `
 {
   "localDir": "dist/",
-  "zipSavePath": "publish",
   "zipName": "dist",
   "servers": [
     {
