@@ -21,12 +21,14 @@ yarn/cnpm/npm install publish-by-ssh2 -g
   ]
 }
 ```
+### 初始化项目
+publish-ssh2-cli i [repoUrl] //repoUrl可以为模板名称（H5、PC）或者仓库地址
 
 ### 用命令生成配置文件模板
 publish-ssh2-cli gcfg [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
 
-## 部署代码命令
+### 部署代码命令
 publish-ssh2-cli publish [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
 
-## 恢复至上个版本
+### 恢复至上个版本
 publish-ssh2-cli revert [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json

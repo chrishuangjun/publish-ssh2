@@ -18,7 +18,7 @@ const generateFile = (filePath, data) => {
     }
     if (fs.existsSync(filePath)) {
         errorLog(`${filePath}文件已存在`)
-        return
+        return Promise.reject();
     }
     return new Promise((resolve, reject) => {
         fs.writeFile(filePath, data, 'utf8', err => {

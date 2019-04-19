@@ -1,1 +1,1 @@
-require('../command/generator_config.js')('publishcfg11\\config.json')
+require('../command/generator_config.js')()
