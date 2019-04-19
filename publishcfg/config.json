@@ -1,13 +1,14 @@
+
 {
-    "localDir": "dist/",
-    "zipName": "dist",
-    "servers": [
-        {
-            "host": "",
-            "user": "",
-            "port": "",
-            "password": "",
-            "remoteDir": ""
-        }
-    ]
+  "localDir": "dist/",
+  "zipName": "dist",
+  "servers": [
+    {
+      "host": "",
+      "user": "",
+      "port": "",
+      "password": "",
+      "remoteDir": ""
+    }
+  ]
 }

@@ -37,6 +37,14 @@ commander
         require('../command/revert')(cfgPath)
     })
 
+commander
+    .command('init')
+    .description('初始化项目')
+    .alias('i')
+    .action((repoUrl) => {
+        require('../command/initProject')(repoUrl)
+    })
+
 // 错误命令时的显示帮助
 commander.parse(process.argv)
 if (!commander.args.length) {

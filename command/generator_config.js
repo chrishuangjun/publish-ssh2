@@ -2,6 +2,7 @@
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
+const ora = require("ora");
 const resolve = (...file) => path.resolve(__dirname, ...file)
 const log = message => console.log(chalk.green(`${message}`))
 const successLog = message => console.log(chalk.blue(`${message}`))
@@ -46,13 +47,16 @@ const configTpl = `
 }
 `
 module.exports = (cfgPath = 'publishcfg\\config.json') => {
+    const spinner = ora('正在生成部署配置文件...').start()
     generateFile(cfgPath, configTpl)
         .then(function () {
             successLog(`配置文件生成成功,路径：${path.join(process.cwd(), cfgPath)}`)
+            spinner.stop();
             process.exit()
         })
         .catch(function (err) {
             errorLog('生成配置文件失败')
+            spinner.stop();
             process.exit()
         })
 }
