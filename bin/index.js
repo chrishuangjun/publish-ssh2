@@ -39,11 +39,11 @@ commander
     })
 
 commander
-    .command('init [repoUrl]')
+    .command('init [repoUrl] [dist]')
     .description('初始化项目')
     .alias('i')
-    .action((repoUrl) => {
-        require('../command/initProject')(repoUrl)
+    .action((repoUrl,dist) => {
+        require('../command/initProject')(repoUrl,dist)
     })
 
 // 错误命令时的显示帮助
