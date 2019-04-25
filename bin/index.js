@@ -14,11 +14,12 @@ commander.version(require('../package').version)
 commander.usage('<command>')
 
 commander
-    .command('publish [cfgPath]')
+    .command('publish [cfgPath] [isPrompt]')
     .description('发布到服务器')
     .alias('p')
-    .action((cfgPath) => {
-        require('../command/publish')(cfgPath)
+    .action((cfgPath,isPrompt) => {
+        //isPrompt 真正开始部署前是否让用户确认部署服务器信息，默认不需要，设置为’Y‘,则会让用户确认服务器信息
+        require('../command/publish')(cfgPath,isPrompt)
     })
 
 commander
