@@ -32,3 +32,6 @@ publish-ssh2-cli publish [cfgPath] //cfgPath为配置文件路径，可选,例�
 
 ### 恢复至上个版本
 publish-ssh2-cli revert [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
+
+### 初始化项目
+publish-ssh2-cli init [repoUrl] [dist] //repoUrl 模板名称（H5、PC）或者仓库地址 dist目标目录一定要是空目录才行

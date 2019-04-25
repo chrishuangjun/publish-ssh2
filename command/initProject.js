@@ -31,9 +31,9 @@ module.exports = (repoUrl,dist) => {
     }
     const spinner = ora('正在初始化项目...').start()
     download(`direct:${repoUrl}`, path.join(process.cwd(),dist), { clone: true }, function (err) {
+        console.log(err ? chalk.red('项目初始化失败',err) : chalk.green('项目初始化成功'))
         replaceStorageTimeStamp(dist,function(){
             spinner.stop()
-            console.log(err ? chalk.red('项目初始化失败') : chalk.green('项目初始化成功'))
         })
     })
 }
