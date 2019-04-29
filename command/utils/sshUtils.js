@@ -238,7 +238,7 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                 }/${zipName}.zip.bak`,
                 function (err, stream) {
                     glob(
-                        '**/*.zip',
+                        '*.zip',
                         {
                             cwd: path.join(cwd, zipSavePath)
                         },

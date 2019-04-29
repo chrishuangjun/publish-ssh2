@@ -6,25 +6,50 @@ const path = require('path')
 const { UploadDir } = require('./utils/sshUtils.js')
 const { readFile, fileDirExists } = require('./utils/fileUtils')
 const produceZip = require('./utils/produce-zip')
+const fs = require('fs');
 
-function publish (cfg) {
+function publish(cfg) {
     console.log(chalk.blue('zip压缩中...'))
-    const cwd = process.cwd()
-    produceZip(
-        path.join(cwd, `${cfg.localDir}/${cfg.zipName}.zip`),
-        path.join(cwd, cfg.localDir),
-        () => {
-            console.log(chalk.blue('zip压缩完成,发布中...'))
-            cfg.servers.forEach(server => {
-                UploadDir(server, cfg.zipName, cfg.localDir, res => {
-                    process.exit()
+    const cwd = process.cwd();
+    try {
+        fs.statSync(path.join(cwd, `/${cfg.zipName}.zip`));
+        fs.unlink(path.join(cwd, `/${cfg.zipName}.zip`), function (err) {
+            if (err) {
+                console.log('delete file error:', err);
+                return;
+            }
+            produceZip(
+                path.join(cwd, `/${cfg.zipName}.zip`),
+                path.join(cwd, cfg.localDir),
+                () => {
+                    console.log(chalk.blue('zip压缩完成,发布中...'))
+                    cfg.servers.forEach(server => {
+                        UploadDir(server, cfg.zipName, '/', res => {
+                            process.exit()
+                        })
+                    })
+                }
+            )
+        })
+    } catch (error) {
+        produceZip(
+            path.join(cwd, `/${cfg.zipName}.zip`),
+            path.join(cwd, cfg.localDir),
+            () => {
+                console.log(chalk.blue('zip压缩完成,发布中...'))
+                cfg.servers.forEach(server => {
+                    UploadDir(server, cfg.zipName, '/', res => {
+                        process.exit()
+                    })
                 })
-            })
-        }
-    )
+            }
+        )
+    }
+
+
 }
 
-module.exports = (cfgPath = 'publishcfg\\config.json',isPrompt = 'N') => {
+module.exports = (cfgPath = 'publishcfg\\config.json', isPrompt = 'N') => {
     console.log(cfgPath)
     co(function* () {
         const fileExist = yield fileDirExists(cfgPath)
@@ -41,17 +66,17 @@ module.exports = (cfgPath = 'publishcfg\\config.json',isPrompt = 'N') => {
             const cfg = JSON.parse(yield readFile(cfgPath))
             console.log(chalk.blue('服务器信息:'))
             console.log(cfg.servers)
-            if(isPrompt.toUpperCase()==='Y'){
+            if (isPrompt.toUpperCase() === 'Y') {
                 const publishAnswer = yield prompt('是否发布（y/n): ')
                 if (publishAnswer.toLowerCase() === 'y') {
                     publish(cfg);
                 } else {
                     process.exit();
                 }
-            }else{
+            } else {
                 publish(cfg);
             }
-            
+
         } catch (ex) {
             console.log(chalk.red(ex))
         }
