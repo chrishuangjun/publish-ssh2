@@ -2,10 +2,10 @@
   "localDir": "dist/",
   "zipName": "dist",
   "servers": [{
-      "host": "132.232.50.197",
-      "user": "root",
+      "host": "10.16.74.42",
+      "user": "apps",
       "port": "22",
-      "password": "",
-      "remoteDir": "/test/"
+      "password": "ehome#jr707",
+      "remoteDir": "/apps/svr/test"
   }]
 }

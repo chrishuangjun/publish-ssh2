@@ -7,9 +7,11 @@ const { UploadDir } = require('./utils/sshUtils.js')
 const { readFile, fileDirExists } = require('./utils/fileUtils')
 const produceZip = require('./utils/produce-zip')
 const fs = require('fs');
+const ora = require("ora");
+const spinner = ora('开始部署……').start()
 
-function publish(cfg) {
-    console.log(chalk.blue('zip压缩中...'))
+function publish (cfg) {
+    spinner.text = 'zip压缩中...'
     const cwd = process.cwd();
     try {
         fs.statSync(path.join(cwd, `/${cfg.zipName}.zip`));
@@ -22,10 +24,11 @@ function publish(cfg) {
                 path.join(cwd, `/${cfg.zipName}.zip`),
                 path.join(cwd, cfg.localDir),
                 () => {
-                    console.log(chalk.blue('zip压缩完成,发布中...'))
+                    spinner.text='zip压缩完成,发布中...'
                     cfg.servers.forEach(server => {
                         UploadDir(server, cfg.zipName, '/', res => {
-                            process.exit()
+                            spinner.succeed('部署完成');
+                            process.exit();
                         })
                     })
                 }
@@ -36,9 +39,12 @@ function publish(cfg) {
             path.join(cwd, `/${cfg.zipName}.zip`),
             path.join(cwd, cfg.localDir),
             () => {
+                spinner.text('zip压缩完成,发布中...')
                 console.log(chalk.blue('zip压缩完成,发布中...'))
                 cfg.servers.forEach(server => {
                     UploadDir(server, cfg.zipName, '/', res => {
+                        console.log(chalk.blue('部署完成'))
+                        spinner.stop();
                         process.exit()
                     })
                 })
@@ -50,22 +56,20 @@ function publish(cfg) {
 }
 
 module.exports = (cfgPath = 'publishcfg\\config.json', isPrompt = 'N') => {
-    console.log(cfgPath)
     co(function* () {
         const fileExist = yield fileDirExists(cfgPath)
 
         if (!fileExist) {
             console.log(
                 chalk.red(
-                    '\n发布失败，原因：请在项目根目录执行当前命令，并在config/config.json里面配置了server服务器信息。'
+                    '\n发布失败，原因：请在项目根目录执行当前命令，并在publishcfg/config.json里面配置了server服务器信息。'
                 )
             )
             process.exit()
         }
         try {
+            spinner.text= '读取部署配置文件中……';
             const cfg = JSON.parse(yield readFile(cfgPath))
-            console.log(chalk.blue('服务器信息:'))
-            console.log(cfg.servers)
             if (isPrompt.toUpperCase() === 'Y') {
                 const publishAnswer = yield prompt('是否发布（y/n): ')
                 if (publishAnswer.toLowerCase() === 'y') {

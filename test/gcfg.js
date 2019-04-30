@@ -1,1 +1,0 @@
-require('../command/generator_config.js')()

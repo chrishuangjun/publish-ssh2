@@ -1,1 +1,0 @@
-require('../command/initProject')('PC')

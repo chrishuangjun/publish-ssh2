@@ -5,7 +5,7 @@ var events = require('events')
 var Client = require('ssh2').Client
 var fs = require('fs')
 var path = require('path')
-var glob = require('glob')
+var chalk = require('chalk')
 
 /**
  * 描述：连接远程电脑
@@ -237,81 +237,57 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                 config.remoteDir
                 }/${zipName}.zip.bak`,
                 function (err, stream) {
-                    glob(
-                        '*.zip',
-                        {
-                            cwd: path.join(cwd, zipSavePath)
-                        },
-                        function (err, files) {
-                            if (err) {
-                                console.log('异常:' + err)
-                                return
-                            }
-                            let length = files.length,
-                                index = 0
-                            conn.sftp((err, sftp) => {
+                    if(err){
+                        console.log(chalk.red('服务器shell命令执行失败'));
+                        process.exit();
+                    }
+                    conn.sftp((err, sftp) => {
+                        if (err) {
+                            console.log(chalk.red('sftp异常:'))
+                            console.log(chalk.red(JSON.stringify(err)))
+                            process.exit();
+                        }
+                        const upload = () => {
+                            sftp.lstat(config.remoteDir, function (err, stat) {
                                 if (err) {
-                                    console.log('异常:' + err)
-                                    return
+                                    //远程服务器的路径不存在，则创建目录
+                                    sftp.mkdir(config.remoteDir)
                                 }
-                                const upload = () => {
-                                    const currentFile = files[index++]
-                                    if (!currentFile || index > length) {
-                                        console.log('上传完毕')
+                                sftp.fastPut(
+                                    path.join(cwd, zipSavePath, `${zipName}.zip`),
+                                    path
+                                        .join(config.remoteDir, `${zipName}.zip`)
+                                        .replace(/\\/g, '/'),
+                                    function (err, result) {
+                                        if (err) {
+                                            console.log(chalk.red('上传文件报错:'))
+                                            console.log(chalk.red(JSON.stringify(err)))
+                                            conn.end()
+                                            process.exit();
+                                        }
                                         conn.exec(
                                             `cd ${config.remoteDir} && unzip -o ${zipName}.zip`,
                                             function (err, stream) {
                                                 if (err) {
-                                                    console.log('异常:' + err)
-                                                    return
+                                                    console.log(chalk.red('执行服务器命令报错:'))
+                                                    console.log(chalk.red(JSON.stringify(err)))
+                                                    process.exit();
                                                 }
                                                 stream
                                                     .on('close', function () {
                                                         conn.end()
                                                         cb && typeof cb === 'function' && cb()
+                                                        process.exit();
                                                     })
                                                     .on('data', function () { })
                                             }
                                         )
-                                        // conn.end()
-                                        return
                                     }
-                                    sftp.lstat(config.remoteDir, function (err, stat) {
-                                        if (err) {
-                                            //远程服务器的路径不存在，则创建目录
-                                            sftp.mkdir(config.remoteDir)
-                                        }
-                                        console.log(
-                                            'path.join(cwd, zipSavePath, currentFile):',
-                                            path.join(cwd, zipSavePath, currentFile)
-                                        )
-                                        console.log(
-                                            'path.join(cwd, zipSavePath, currentFile)服务器:',
-                                            path
-                                                .join(config.remoteDir, currentFile)
-                                                .replace(/\\/g, '/')
-                                        )
-                                        sftp.fastPut(
-                                            path.join(cwd, zipSavePath, currentFile),
-                                            path
-                                                .join(config.remoteDir, currentFile)
-                                                .replace(/\\/g, '/'),
-                                            function (err, result) {
-                                                if (err) {
-                                                    console.log(err, '出错了')
-                                                    conn.end()
-                                                    return
-                                                }
-                                                console.log(`${currentFile}上传成功`)
-                                                upload()
-                                            }
-                                        )
-                                    })
-                                }
-                                upload()
+                                )
                             })
                         }
-                    )
+                        upload()
+                    })
                 }
             )
         })
