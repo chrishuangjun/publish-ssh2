@@ -80,5 +80,9 @@ const help = function () {
     console.log(chalk.grey('    初始化项目，命令内置了两个模板一个是H5（移动端开发模板），一个是PC(pc端开发模板)，命令如下：'))
     console.log()
     console.log(chalk.green('    publish-ssh2-cli i [repoUrl]'))
+    console.log()
+    console.log(chalk.grey('    将指定文件夹生成压缩包，命令如下：'))
+    console.log()
+    console.log(chalk.green('    publish-ssh2-cli c [cfgPath]'))
 }
 commander.on('--help', help)

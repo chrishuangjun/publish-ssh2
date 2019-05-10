@@ -32,3 +32,6 @@ publish-ssh2-cli publish [cfgPath] [isPrompt] //cfgPath为配置文件路径，�
 
 ### 恢复至上个版本
 publish-ssh2-cli revert [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
+
+### 生成压缩包
+publish-ssh2-cli compress [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
