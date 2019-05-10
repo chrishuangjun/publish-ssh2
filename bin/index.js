@@ -47,6 +47,14 @@ commander
         require('../command/initProject')(repoUrl,dist)
     })
 
+commander
+    .command('compress  [cfgPath]')
+    .description('将指定文件夹生成压缩包')
+    .alias('c')
+    .action((cfgPath) => {
+        require('../command/compress')(cfgPath)
+    })    
+
 // 错误命令时的显示帮助
 commander.parse(process.argv)
 if (!commander.args.length) {

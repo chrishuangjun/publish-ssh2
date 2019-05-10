@@ -233,9 +233,9 @@ function UploadDir(config, zipName, zipSavePath, cb) {
     conn
         .on('ready', function () {
             conn.exec(
-                `mv ${config.remoteDir}/${zipName}.zip ${
+                `mv ${config.remoteDir}/${zipName} ${
                 config.remoteDir
-                }/${zipName}.zip.bak`,
+                }/${zipName}.bak`,
                 function (err, stream) {
                     if(err){
                         console.log(chalk.red('服务器shell命令执行失败'));
@@ -254,9 +254,9 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                                     sftp.mkdir(config.remoteDir)
                                 }
                                 sftp.fastPut(
-                                    path.join(cwd, zipSavePath, `${zipName}.zip`),
+                                    path.join(cwd, zipSavePath, `${zipName}`),
                                     path
-                                        .join(config.remoteDir, `${zipName}.zip`)
+                                        .join(config.remoteDir, `${zipName}`)
                                         .replace(/\\/g, '/'),
                                     function (err, result) {
                                         if (err) {
@@ -266,7 +266,7 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                                             process.exit();
                                         }
                                         conn.exec(
-                                            `cd ${config.remoteDir} && unzip -o ${zipName}.zip`,
+                                            `cd ${config.remoteDir} && unzip -o ${zipName}`,
                                             function (err, stream) {
                                                 if (err) {
                                                     console.log(chalk.red('执行服务器命令报错:'))
