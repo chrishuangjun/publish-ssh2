@@ -7,7 +7,7 @@ function revert(config, zipName) {
     conn
         .on('ready', function () {
             conn.exec(
-                `rm -rf ${config.remoteDir}/${zipName} && mv ${config.remoteDir}/${zipName}.bak ${config.remoteDir}/${zipName} && unzip -o ${zipName}`,
+                `cd ${config.remoteDir} && rm -rf ${config.remoteDir}/${zipName} && mv ${config.remoteDir}/${zipName}.bak ${config.remoteDir}/${zipName} && unzip -o ${zipName}`,
                 function (err, stream) {
                     if (err) {
                         console.log(err)
