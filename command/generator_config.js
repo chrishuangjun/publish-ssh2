@@ -8,11 +8,9 @@ const log = message => console.log(chalk.green(`${message}`))
 const successLog = message => console.log(chalk.blue(`${message}`))
 const errorLog = error => console.log(chalk.red(`${error}`))
 const generateFile = (filePath, data) => {
-    console.log('filePath:', filePath)
-    let pathArr = filePath.split('\\');
+    let pathArr = filePath.split('/');
     pathArr.pop();
     let configPath = path.join(process.cwd(), pathArr.join('\\'))
-    console.log(configPath);
     if (!fs.existsSync(configPath)) {
         fs.mkdir(configPath)
     }
@@ -31,24 +29,14 @@ const generateFile = (filePath, data) => {
         })
     })
 }
-const configTpl = `
-{
-  "localDir": "dist/",
-  "zipName": "dist",
-  "servers": [
-    {
-      "host": "",
-      "user": "",
-      "port": "",
-      "password": "",
-      "remoteDir": ""
+module.exports = (cfgPath='publishcfg\\config.json',type='config') => {
+    const mapT = {
+        config:'./template/configT.js',
+        comp:'./template/vueComp.js'
     }
-  ]
-}
-`
-module.exports = (cfgPath = 'publishcfg\\config.json') => {
+    const temp = require(mapT[type]);
     const spinner = ora('正在生成部署配置文件...').start()
-    generateFile(cfgPath, configTpl)
+    generateFile(cfgPath, temp)
         .then(function () {
             successLog(`配置文件生成成功,路径：${path.join(process.cwd(), cfgPath)}`)
             spinner.stop();

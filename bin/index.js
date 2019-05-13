@@ -17,9 +17,9 @@ commander
     .command('publish [cfgPath] [isPrompt]')
     .description('发布到服务器')
     .alias('p')
-    .action((cfgPath,isPrompt) => {
+    .action((cfgPath, isPrompt) => {
         //isPrompt 真正开始部署前是否让用户确认部署服务器信息，默认不需要，设置为’Y‘,则会让用户确认服务器信息
-        require('../command/publish')(cfgPath,isPrompt)
+        require('../command/publish')(cfgPath, isPrompt)
     })
 
 commander
@@ -27,7 +27,7 @@ commander
     .description('生成配置文件')
     .alias('gcfg')
     .action((cfgPath) => {
-        console.log('生成配置文件:cfgPath:',cfgPath)
+        console.log('生成配置文件:cfgPath:', cfgPath)
         require('../command/generator_config')(cfgPath)
     })
 
@@ -43,8 +43,8 @@ commander
     .command('init [repoUrl] [dist]')
     .description('初始化项目')
     .alias('i')
-    .action((repoUrl,dist) => {
-        require('../command/initProject')(repoUrl,dist)
+    .action((repoUrl, dist) => {
+        require('../command/initProject')(repoUrl, dist)
     })
 
 commander
@@ -53,7 +53,14 @@ commander
     .alias('c')
     .action((cfgPath) => {
         require('../command/compress')(cfgPath)
-    })    
+    })
+commander
+    .command('ganerator  [dist] [type]')
+    .description('将指定文件夹生成压缩包')
+    .alias('g')
+    .action((dist,type) => {
+        require('../command/generator_config')(dist,type)
+    })
 
 // 错误命令时的显示帮助
 commander.parse(process.argv)

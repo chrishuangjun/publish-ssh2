@@ -35,3 +35,6 @@ publish-ssh2-cli revert [cfgPath] //cfgPath为配置文件路径，可选,例如
 
 ### 生成压缩包
 publish-ssh2-cli compress [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
+
+### 生成组件
+publish-ssh2-cli ganeratorVueComp [dist] [type] //dist为组件的路径，可选,例如demo.vue;type为文件类型，可选值config(生成部署配置文件)、comp(生成组件)

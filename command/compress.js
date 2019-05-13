@@ -39,7 +39,7 @@ function compress (cfg,suffix) {
 
 }
 
-module.exports = (cfgPath = 'publishcfg\\config.json') => {
+module.exports = (cfgPath = 'publishcfg/config.json') => {
     co(function* () {
         const fileExist = yield fileDirExists(cfgPath)
 

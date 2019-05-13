@@ -55,7 +55,7 @@ function publish (cfg) {
 
 }
 
-module.exports = (cfgPath = 'publishcfg\\config.json', isPrompt = 'N') => {
+module.exports = (cfgPath = 'publishcfg/config.json', isPrompt = 'N') => {
     co(function* () {
         const fileExist = yield fileDirExists(cfgPath)
 
