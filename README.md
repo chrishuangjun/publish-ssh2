@@ -1,11 +1,7 @@
-# 安装命令
+## 安装命令
 yarn/cnpm/npm install publish-by-ssh2 -g
 
-# 使用命令
-
-## 配置文件
-
-### 配置文件说明
+## 配置文件说明
 ```配置文件模板
 {
   "localDir": "dist/",//本地需要发布的代码目录
@@ -21,6 +17,15 @@ yarn/cnpm/npm install publish-by-ssh2 -g
   ]
 }
 ```
+## 功能点说明：
+### 1、初始化项目
+### 2、生成部署配置文件模板
+### 3、根据指定的文件路劲生成组件模板
+### 4、部署代码到指定服务器
+### 5、服务器代码回滚
+### 6、将指定文件夹压缩成压缩包
+
+## 命令使用说明
 ### 初始化项目
 publish-ssh2-cli init [repoUrl] [dist] //repoUrl 模板名称（H5、PC）或者仓库地址 dist目标目录一定要是空目录才行
 
@@ -37,4 +42,4 @@ publish-ssh2-cli revert [cfgPath] //cfgPath为配置文件路径，可选,例如
 publish-ssh2-cli compress [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
 
 ### 生成组件
-publish-ssh2-cli ganeratorVueComp [dist] [type] //dist为组件的路径，可选,例如demo.vue;type为文件类型，可选值config(生成部署配置文件)、comp(生成组件)
+publish-ssh2-cli ganeratorVueComp [dist]  //dist为组件的路径，可选,例如demo.vue;
