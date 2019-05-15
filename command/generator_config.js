@@ -10,10 +10,14 @@ const errorLog = error => console.log(chalk.red(`${error}`))
 const generateFile = (filePath, data) => {
     let pathArr = filePath.split('/');
     pathArr.pop();
-    let configPath = path.join(process.cwd(), pathArr.join('\\'))
-    if (!fs.existsSync(configPath)) {
-        fs.mkdir(configPath)
-    }
+    pathArr.reduce(function(previousValue,currentValue){
+        previousValue.push(currentValue);
+        let dirPath = path.join(process.cwd(), previousValue.join('\\'));
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdir(dirPath)
+        }
+        return previousValue;
+    },[])
     if (fs.existsSync(filePath)) {
         errorLog(`${filePath}文件已存在`)
         return Promise.reject();
@@ -29,11 +33,11 @@ const generateFile = (filePath, data) => {
         })
     })
 }
-module.exports = (cfgPath='publishcfg\\config.json',type='config') => {
+module.exports = (cfgPath = 'publishcfg/config.json', type = 'config') => {
     //type为文件类型，可选值config(生成部署配置文件)、comp(生成组件)
     const mapT = {
-        config:'./template/configT.js',
-        comp:'./template/vueComp.js'
+        config: './template/configT.js',
+        comp: './template/vueComp.js'
     }
     const temp = require(mapT[type]);
     const spinner = ora('正在生成部署配置文件...').start()

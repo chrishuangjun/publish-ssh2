@@ -6,3 +6,4 @@ dist
 *.zip
 *.tar.gz
 publishcfg
+.vscode
