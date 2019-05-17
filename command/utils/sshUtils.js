@@ -233,9 +233,7 @@ function UploadDir(config, zipName, zipSavePath, cb) {
     conn
         .on('ready', function () {
             conn.exec(
-                `mv ${config.remoteDir}/${zipName} ${
-                config.remoteDir
-                }/${zipName}.bak`,
+                `mv ${config.remoteDir}/${zipName} ${config.remoteDir}/${zipName}.bak`,
                 function (err, stream) {
                     if(err){
                         console.log(chalk.red('服务器shell命令执行失败'));

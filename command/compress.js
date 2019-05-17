@@ -15,7 +15,7 @@ function compress (cfg,suffix) {
         fs.statSync(path.join(cwd, `/${cfg.zipName}`));
         fs.unlink(path.join(cwd, `/${cfg.zipName}`), function (err) {
             if (err) {
-                console.log('delete file error:', err);
+                spinner.fail('压缩失败');
                 return;
             }
             produceZip(
@@ -54,6 +54,10 @@ module.exports = (cfgPath = 'publishcfg/config.json') => {
         try {
             spinner.text= '读取部署配置文件中……';
             const cfg = JSON.parse(yield readFile(cfgPath))
+            if(cfg.zipName.indexOf('.')===-1){
+                // 如果用户未写压缩文件后缀，则默认添加.zip后缀名
+                cfg.zipName=`${cfg.zipName}.zip`
+            }
             compress(cfg);
         } catch (ex) {
             console.log(chalk.red(ex))

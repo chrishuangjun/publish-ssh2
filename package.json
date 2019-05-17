@@ -1,6 +1,6 @@
 {
     "name": "publish-by-ssh2",
-    "version": "1.0.29",
+    "version": "1.0.30",
     "description": "将代码压缩成zip部署服务器，并在服务器进行备份和解压zip",
     "main": "bin/index.js",
     "scripts": {

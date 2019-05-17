@@ -25,21 +25,23 @@ module.exports = (repoUrl, dist) => {
         console.log('请提供模板名称或者仓库地址，模板名称支持H5、PC')
         return;
     }
-    if (repoUrl === 'H5') {
+    if (repoUrl.toUpperCase() === 'H5') {
         isH5Template = true;
         repoUrl = 'http://10.16.28.73/financial-center/vue-template-h5.git#perreadme';
-    } else if (repoUrl === 'PC') {
-        repoUrl = 'http://10.16.28.73/financial-center/vue-template-h5.git'
+    } else if (repoUrl.toUpperCase() === 'PC') {
+        repoUrl = 'http://10.16.28.73/financial-center/vue-template-pc.git'
     }
     const spinner = ora('正在初始化项目...').start()
     download(`direct:${repoUrl}`, path.join(process.cwd(), dist), { clone: true }, function (err) {
-        console.log(err ? chalk.red('项目初始化失败', err) : chalk.green('项目初始化成功'))
+        if(err){
+            spinner.fail('初始化项目失败');
+        }
         if (isH5Template) {
             replaceStorageTimeStamp(dist, function () {
-                spinner.stop()
+                spinner.succeed('初始化项目完成');
             })
         }else{
-            spinner.stop();
+            spinner.succeed('初始化项目完成');
         }
     })
 }

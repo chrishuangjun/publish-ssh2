@@ -17,7 +17,7 @@ function publish (cfg) {
         fs.statSync(path.join(cwd, `/${cfg.zipName}`));
         fs.unlink(path.join(cwd, `/${cfg.zipName}`), function (err) {
             if (err) {
-                console.log('delete file error:', err);
+                spinner.fail('删除原有压缩包失败');
                 return;
             }
             produceZip(
@@ -43,8 +43,7 @@ function publish (cfg) {
                 console.log(chalk.blue('zip压缩完成,发布中...'))
                 cfg.servers.forEach(server => {
                     UploadDir(server, cfg.zipName, '/', res => {
-                        console.log(chalk.blue('部署完成'))
-                        spinner.stop();
+                        spinner.succeed('部署完成');
                         process.exit()
                     })
                 })
@@ -70,6 +69,10 @@ module.exports = (cfgPath = 'publishcfg/config.json', isPrompt = 'N') => {
         try {
             spinner.text= '读取部署配置文件中……';
             const cfg = JSON.parse(yield readFile(cfgPath))
+            if(cfg.zipName.indexOf('.')===-1){
+                // 如果用户未写压缩文件后缀，则默认添加.zip后缀名
+                cfg.zipName=`${cfg.zipName}.zip`
+            }
             if (isPrompt.toUpperCase() === 'Y') {
                 const publishAnswer = yield prompt('是否发布（y/n): ')
                 if (publishAnswer.toLowerCase() === 'y') {

@@ -44,12 +44,11 @@ module.exports = (cfgPath = 'publishcfg/config.json', type = 'config') => {
     generateFile(cfgPath, temp)
         .then(function () {
             successLog(`配置文件生成成功,路径：${path.join(process.cwd(), cfgPath)}`)
-            spinner.stop();
+            spinner.succeed('文件生成成功');
             process.exit()
         })
         .catch(function (err) {
-            errorLog('生成配置文件失败')
-            spinner.stop();
+            spinner.fail('生成配置文件失败');
             process.exit()
         })
 }
