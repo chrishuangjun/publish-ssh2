@@ -1,13 +1,13 @@
 {
-    "name": "publish-by-ssh2",
-    "version": "1.0.30",
+    "name": "custom-vue-cli",
+    "version": "0.1.0",
     "description": "将代码压缩成zip部署服务器，并在服务器进行备份和解压zip",
     "main": "bin/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "bin": {
-        "publish-ssh2-cli": "bin/index.js"
+        "custom-vue-cli": "bin/index.js"
     },
     "keywords": [
         "publish",

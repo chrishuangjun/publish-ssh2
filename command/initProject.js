@@ -19,24 +19,26 @@ function replaceStorageTimeStamp (dist, cb) {
     })
 }
 module.exports = (repoUrl, dist) => {
-    let isH5Template = false;
+    let defaultTemplate = false;
     dist = dist || ''
     if (!repoUrl) {
         console.log('请提供模板名称或者仓库地址，模板名称支持H5、PC')
         return;
     }
     if (repoUrl.toUpperCase() === 'H5') {
-        isH5Template = true;
+        defaultTemplate = true;
         repoUrl = 'http://10.16.28.73/financial-center/vue-template-h5.git#perreadme';
-    } else if (repoUrl.toUpperCase() === 'PC') {
+    } else if (repoUrl.toUpperCase() === 'PC') {sssssssssssssssss
+        defaultTemplate = true;
         repoUrl = 'http://10.16.28.73/financial-center/vue-template-pc.git'
     }
     const spinner = ora('正在初始化项目...').start()
+    console.log('repoUrl:',repoUrl)
     download(`direct:${repoUrl}`, path.join(process.cwd(), dist), { clone: true }, function (err) {
         if(err){
             spinner.fail('初始化项目失败');
         }
-        if (isH5Template) {
+        if (defaultTemplate) { // 默认项目模板才需要调用此方法
             replaceStorageTimeStamp(dist, function () {
                 spinner.succeed('初始化项目完成');
             })
