@@ -28,7 +28,7 @@ module.exports = (repoUrl, dist) => {
     if (repoUrl.toUpperCase() === 'H5') {
         defaultTemplate = true;
         repoUrl = 'http://10.16.28.73/financial-center/vue-template-h5.git#perreadme';
-    } else if (repoUrl.toUpperCase() === 'PC') {sssssssssssssssss
+    } else if (repoUrl.toUpperCase() === 'PC') {
         defaultTemplate = true;
         repoUrl = 'http://10.16.28.73/financial-center/vue-template-pc.git'
     }
