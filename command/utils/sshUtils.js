@@ -6,6 +6,7 @@ var Client = require('ssh2').Client
 var fs = require('fs')
 var path = require('path')
 var chalk = require('chalk')
+const { resolve } = require('path')
 
 /**
  * 描述：连接远程电脑
@@ -230,20 +231,23 @@ function GetFileAndDirList(localDir, dirs, files) {
 function UploadDir(config, zipName, zipSavePath, cb) {
     const conn = new Client()
     const cwd = process.cwd()
-    conn
+    return new Promise((resolve,reject)=>{
+        conn
         .on('ready', function () {
             conn.exec(
                 `mv ${config.remoteDir}/${zipName} ${config.remoteDir}/${zipName}.bak`,
                 function (err, stream) {
                     if(err){
                         console.log(chalk.red('服务器shell命令执行失败'));
-                        process.exit();
+                        reject();
+                        // process.exit();
                     }
                     conn.sftp((err, sftp) => {
                         if (err) {
                             console.log(chalk.red('sftp异常:'))
                             console.log(chalk.red(JSON.stringify(err)))
-                            process.exit();
+                            reject();
+                            // process.exit();
                         }
                         const upload = () => {
                             sftp.lstat(config.remoteDir, function (err, stat) {
@@ -261,7 +265,8 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                                             console.log(chalk.red('上传文件报错:'))
                                             console.log(chalk.red(JSON.stringify(err)))
                                             conn.end()
-                                            process.exit();
+                                            reject();
+                                            // process.exit();
                                         }
                                         conn.exec(
                                             `cd ${config.remoteDir} && unzip -o ${zipName}`,
@@ -269,13 +274,15 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                                                 if (err) {
                                                     console.log(chalk.red('执行服务器命令报错:'))
                                                     console.log(chalk.red(JSON.stringify(err)))
-                                                    process.exit();
+                                                    reject();
+                                                    // process.exit();
                                                 }
                                                 stream
                                                     .on('close', function () {
                                                         conn.end()
                                                         cb && typeof cb === 'function' && cb()
-                                                        process.exit();
+                                                        resolve();
+                                                        // process.exit();
                                                     })
                                                     .on('data', function () { })
                                             }
@@ -295,45 +302,9 @@ function UploadDir(config, zipName, zipSavePath, cb) {
             username: config.user,
             password: config.password
         })
+    })
+    
 }
-// function UploadDir(server, localDir, remoteDir, then) {
-//   var dirs = []
-//   var files = []
-//   GetFileAndDirList(localDir, dirs, files)
-
-//   // 创建远程目录
-//   var todoDir = []
-//   dirs.forEach(function(dir) {
-//     todoDir.push(function(done) {
-//       var to = path
-//         .join(remoteDir, dir.slice(localDir.length))
-//         .replace(/[\\]/g, '/')
-//       var cmd = 'mkdir -p ' + to + '\r\nexit\r\n'
-//       console.log(cmd)
-//       Shell(server, cmd, done)
-//     }) // end of push
-//   })
-
-//   // 上传文件
-//   var todoFile = []
-//   files.forEach(function(file) {
-//     todoFile.push(function(done) {
-//       var to = path
-//         .join(remoteDir, file.slice(localDir.length))
-//         .replace(/[\\]/g, '/')
-//       console.log('从' + file + '上传到' + to)
-//       UploadFile(server, file, to, done)
-//     })
-//   })
-
-//   control.emit('donext', todoDir, function(err) {
-//     if (err) {
-//       throw err
-//     } else {
-//       control.emit('donext', todoFile, then)
-//     }
-//   })
-// }
 
 exports.Shell = Shell
 exports.UploadFile = UploadFile

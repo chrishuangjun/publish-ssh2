@@ -24,12 +24,18 @@ function publish (cfg) {
                 path.join(cwd, `/${cfg.zipName}`),
                 path.join(cwd, cfg.localDir),
                 () => {
-                    spinner.text='zip压缩完成,发布中...'
+                    spinner.text='zip压缩完成,发布中...';
+                    let promiseArr = [];
                     cfg.servers.forEach(server => {
-                        UploadDir(server, cfg.zipName, '/', res => {
-                            spinner.succeed('部署完成');
-                            process.exit();
-                        })
+                        (function(server){
+                            promiseArr.push(UploadDir(server, cfg.zipName, '/', res => {
+                                spinner.succeed(`${server.host}部署完成`);
+                            }))
+                        })(server)
+                    })
+                    Promise.all(promiseArr).then(()=>{
+                        spinner.succeed('全部服务器部署完成');
+                        process.exit();
                     })
                 }
             )
