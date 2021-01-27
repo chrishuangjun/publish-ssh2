@@ -24,6 +24,7 @@ npm install custom-vue-cli -g
 ### 4、部署代码到指定服务器
 ### 5、服务器代码回滚
 ### 6、将指定文件夹压缩成压缩包
+### 7、同步部署
 
 ## 命令使用说明
 ### 初始化项目
@@ -41,12 +42,17 @@ npm install custom-vue-cli -g
 ### 生成压缩包
         custom-vue-cli compress [cfgPath] //cfgPath为配置文件路径，可选,例如publishcfg/config.json
 
+### 同步部署
+        custom-vue-cli sync [cfgPath] [targetCfgPath] //cfgPath为源服务器配置文件路径，可选,例如publishcfg/config.json； targetCfgPath为目标服务器的配置文件
+
 ### 生成组件
         custom-vue-cli ganeratorVueComp [dist]  //dist为组件的路径，可选,例如demo.vue;
 
 ## 更新记录
 ### 2020-07-11
         批量部署bug修复：部署配置文件中添加多个服务器，则可以同时部署多台服务器；
+### 2021-01-27
+        新增同步部署功能：即将指定服务器代码至目标服务器的功能；
 例如：
 ```
 {

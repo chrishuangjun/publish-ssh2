@@ -61,6 +61,14 @@ commander
         require('../command/compress')(cfgPath)
     })
 
+commander
+    .command('sync  [cfgPath] [targetCfgPath]')
+    .description('将指定服务器的代码同步到另外一台服务器（服务器之间需要建立免密码通讯）')
+    .alias('s')
+    .action((cfgPath,targetCfgPath) => {
+        require('../command/sync')(cfgPath,targetCfgPath)
+    })
+
 
 // 错误命令时的显示帮助
 commander.parse(process.argv)
@@ -95,5 +103,9 @@ const help = function () {
     console.log(chalk.grey('    将指定文件夹生成压缩包，命令如下：'))
     console.log()
     console.log(chalk.green('    custom-vue-cli c(或者compress) [cfgPath]'))
+    console.log()
+    console.log(chalk.grey('    将指定服务器的代码同步到另外一台服务器（服务器之间需要建立免密码通讯），命令如下：'))
+    console.log()
+    console.log(chalk.green('    custom-vue-cli s(sync) [cfgPath] [targetCfgPath]'))
 }
 commander.on('--help', help)
