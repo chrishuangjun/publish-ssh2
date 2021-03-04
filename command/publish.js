@@ -36,7 +36,14 @@ function publish (cfg) {
                     Promise.all(promiseArr).then(()=>{
                         spinner.succeed('全部服务器部署完成');
                         process.exit();
-                    })
+                    }).catch((err)=>{
+                        if(err.level === 'client-authentication'){
+                            spinner.fail('服务器账号密码不正确,连接服务器异常导致部署失败');
+                        }else{
+                            spinner.fail('致部署失败');
+                        }
+                        process.exit();
+                    });
                 }
             )
         })

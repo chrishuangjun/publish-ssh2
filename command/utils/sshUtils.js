@@ -296,6 +296,9 @@ function UploadDir(config, zipName, zipSavePath, cb) {
                 }
             )
         })
+        .on('error',function(err){
+            reject(err);
+        })
         .connect({
             host: config.host,
             port: config.port,
